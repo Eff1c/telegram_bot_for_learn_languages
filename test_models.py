@@ -1,7 +1,7 @@
 import pytest
 from decouple import config
 
-from models import add_word, check_translation, get_random_word, update_number_of_correct_answers
+from db_helpers import add_word, check_translation, get_random_word, update_number_of_correct_answers
 
 
 

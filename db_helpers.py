@@ -8,11 +8,13 @@ db = client.learn_english
 
 words_column = db.words
 
-# class Word:
-#     def __init__(self, word):
-#         self.
 
-def add_word(word: str, translation: List[str], number_of_correct_answers_from: int = 0, number_of_correct_answers_to: int = 0) -> str:
+def add_word(
+    word: str,
+    translation: List[str],
+    number_of_correct_answers_from: int = 0,
+    number_of_correct_answers_to: int = 0
+) -> str:
     try:
         words_column.insert_one(
             {
@@ -80,14 +82,3 @@ def get_random_word(current_word: str) -> dict:
         }]
     ).next()
 
-
-# print(get_random_word("something"))
-# # result = add_word("nothing", ["нічого"])
-# # print(result)
-# print(db.list_collection_names())
-#
-# mydoc = words_column.find()
-#
-# print("words_column")
-# for x in mydoc:
-#     print(type(x))
