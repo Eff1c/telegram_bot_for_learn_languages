@@ -16,7 +16,7 @@ async def send_welcome(message: types.Message):
     """
     This handler will be called when user sends `/start` or `/help` command
     """
-    with open("help.txt", "r", encoding="utf-8") as f:
+    with open("help_texts/main_help.txt", "r", encoding="utf-8") as f:
         help_text = f.read()
 
     await message.reply(help_text)
