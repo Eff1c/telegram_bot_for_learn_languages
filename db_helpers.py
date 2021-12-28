@@ -1,8 +1,9 @@
 from typing import List
 
+from decouple import config
 from pymongo import MongoClient, errors
 
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient(config("MONGODB_URL"))
 
 db = client.learn_english
 
