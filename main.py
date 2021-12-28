@@ -4,6 +4,8 @@ from aiogram import Bot, Dispatcher, executor, types
 from decouple import config
 
 # Configure logging
+from helpers import read_help_text
+
 logging.basicConfig(level=logging.INFO)
 
 # Initialize bot and dispatcher
@@ -16,8 +18,7 @@ async def send_welcome(message: types.Message):
     """
     This handler will be called when user sends `/start` or `/help` command
     """
-    with open("help_texts/main_help.txt", "r", encoding="utf-8") as f:
-        help_text = f.read()
+    help_text = read_help_text("main_help.txt")
 
     await message.reply(help_text)
 
