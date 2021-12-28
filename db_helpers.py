@@ -10,7 +10,7 @@ db = client.learn_english
 words_column = db.words
 
 
-def add_word(
+async def add_word(
     word: str,
     translations: List[str],
     chat_id,
@@ -41,7 +41,7 @@ def add_word(
         return False, "Not unique word!"
 
 
-def update_number_of_correct_answers(word: str, chat_id: int, field: str, increase: bool):
+async def update_number_of_correct_answers(word: str, chat_id: int, field: str, increase: bool):
     query = {
         "word": word,
         "chat_id": chat_id
@@ -90,7 +90,7 @@ def check_translation(word_dict: dict, chat_id: int, input_: str, answer_from: b
     return respond
 
 
-def get_random_word(current_word: str, chat_id: int) -> dict:
+async def get_random_word(current_word: str, chat_id: int) -> dict:
     return words_column.aggregate(
         [{
             "$sample": {"size": 1}
