@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 from decouple import config
 from pymongo import MongoClient, errors
@@ -12,22 +12,30 @@ words_column = db.words
 
 def add_word(
     word: str,
-    translation: List[str],
+    translations: List[str],
     number_of_correct_answers_from: int = 0,
     number_of_correct_answers_to: int = 0
-) -> str:
+) -> Tuple[bool, str]:
+    """
+    Function for add a new word to the database
+    :param word: word (str) for learning
+    :param translations: arrays translations
+    :param number_of_correct_answers_from: `optional` point correct answers from learning languages
+    :param number_of_correct_answers_to: `optional`
+    :return: successful (bool) and response (str)
+    """
     try:
         words_column.insert_one(
             {
                 "word": word,
-                "translation": translation,
+                "translations": translations,
                 "number_of_correct_answers_from": number_of_correct_answers_from,
                 "number_of_correct_answers_to": number_of_correct_answers_to
             }
         )
-        return "Successful!"
+        return True, "Successful!"
     except errors.DuplicateKeyError:
-        return "Not unique word!"
+        return False, "Not unique word!"
 
 
 def update_number_of_correct_answers(word: str, field: str, increase: bool):
