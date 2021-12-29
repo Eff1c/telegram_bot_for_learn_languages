@@ -10,6 +10,10 @@ db = client.learn_english
 words_column = db.words
 
 
+def first_run() -> None:
+    words_column.create_index([("word", "text")], unique=True)
+
+
 async def add_word(
     word: str,
     translations: List[str],
@@ -96,4 +100,3 @@ async def get_random_word(current_word: str, chat_id: int) -> dict:
             "$sample": {"size": 1}
         }]
     ).next()
-
