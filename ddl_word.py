@@ -10,7 +10,7 @@ from db_helpers import add_word as add_word_to_db
 router_ddl_word = Router()
 
 
-class Form(StatesGroup):
+class FormAddWord(StatesGroup):
     word = State()
     translates = State()
 
@@ -37,7 +37,7 @@ async def add_word(message: types.Message, state: FSMContext) -> None:
     """
     Add word for learning
     """
-    await state.set_state(Form.word)
+    await state.set_state(FormAddWord.word)
 
     await message.answer(
         "Введіть слово яке хочете вивчити",
@@ -45,17 +45,17 @@ async def add_word(message: types.Message, state: FSMContext) -> None:
     )
 
 
-@router_ddl_word.message(state=Form.word)
+@router_ddl_word.message(state=FormAddWord.word)
 async def process_word(message: types.Message, state: FSMContext) -> None:
     await state.update_data(word=message.text)
-    await state.set_state(Form.translates)
+    await state.set_state(FormAddWord.translates)
 
     help_text = read_help_text("add_translations_help.txt")
 
     await message.answer(help_text)
 
 
-@router_ddl_word.message(state=Form.translates)
+@router_ddl_word.message(state=FormAddWord.translates)
 async def process_gender(message: types.Message, state: FSMContext) -> None:
     data = await state.update_data(
         translates=parse_translates_from_str(message.text)
