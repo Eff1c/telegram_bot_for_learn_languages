@@ -95,11 +95,23 @@ def check_translation(word_dict: dict, chat_id: int, input_: str, answer_from: b
 
 
 async def get_random_word(current_word: str, chat_id: int) -> dict:
-    return words_column.aggregate(
-        [{
-            "$sample": {"size": 1}
-        }]
+    random_word = words_column.aggregate(
+        [
+            {
+                "$match": {
+                    "chat_id": chat_id,
+                    "word": {"$ne": current_word}
+                }
+            },
+            {
+                "$sample": {
+                    "size": 1
+                }
+            }
+        ]
     ).next()
+
+    return random_word
 
 
 async def delete(word: str) -> Tuple[bool, str]:
