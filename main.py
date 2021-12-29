@@ -1,14 +1,32 @@
 import asyncio
-from aiogram import Bot
+import logging
+
+from aiogram import Bot, Dispatcher, types, Router
 from decouple import config
 
-# async def main():
-#     bot = Bot(token=BOT_TOKEN)
-#
-#     try:
-#         me = await bot.get_me()
-#         print(f"🤖 Hello, I'm {me.first_name}.\nHave a nice Day!")
-#     finally:
-#         await bot.close()
-#
-# asyncio.run(main())
+from helpers import read_help_text
+from ddl_word import router_ddl_word
+
+logging.basicConfig(level=logging.INFO)
+
+main_router = Router()
+
+
+@main_router.message(commands=['start', 'help'])
+async def send_welcome(message: types.Message):
+    help_text = read_help_text("main_help.txt")
+
+    await message.reply(help_text)
+
+
+async def main():
+    bot = Bot(token=config('BOT_TOKEN'), parse_mode="HTML")
+    dp = Dispatcher()
+    dp.include_router(main_router)
+    dp.include_router(router_ddl_word)
+
+    await dp.start_polling(bot, skip_updates=True)
+
+
+if __name__ == '__main__':
+    asyncio.run(main())
