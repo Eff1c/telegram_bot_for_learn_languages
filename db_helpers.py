@@ -100,3 +100,13 @@ async def get_random_word(current_word: str, chat_id: int) -> dict:
             "$sample": {"size": 1}
         }]
     ).next()
+
+
+async def delete(word: str) -> Tuple[bool, str]:
+    response = words_column.delete_one(
+        {"word": word}
+    )
+    if response.deleted_count != 0:
+        return True, "Successful!"
+    else:
+        return False, "Word not found!"
