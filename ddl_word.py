@@ -1,5 +1,4 @@
-from aiogram import Router, types, F
-from aiogram.dispatcher.filters import Text
+from aiogram import Router, types
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardRemove
@@ -16,7 +15,6 @@ class FormAddWord(StatesGroup):
 
 
 @router_ddl_word.message(commands={"cancel"})
-@router_ddl_word.message(F.text.casefold() == "cancel")
 async def cancel_handler(message: types.Message, state: FSMContext) -> None:
     """
     Allow user to cancel any action
@@ -32,7 +30,7 @@ async def cancel_handler(message: types.Message, state: FSMContext) -> None:
     )
 
 
-@router_ddl_word.message(commands=['add'])
+@router_ddl_word.message(commands={'add'})
 async def add_word(message: types.Message, state: FSMContext) -> None:
     """
     Add word for learning
