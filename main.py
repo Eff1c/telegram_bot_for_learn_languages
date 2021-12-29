@@ -5,6 +5,7 @@ from aiogram import Bot, Dispatcher, types, Router
 from decouple import config
 
 from helpers import read_help_text
+from ddl_word import router_ddl_word
 
 logging.basicConfig(level=logging.INFO)
 
@@ -22,6 +23,7 @@ async def main():
     bot = Bot(token=config('BOT_TOKEN'), parse_mode="HTML")
     dp = Dispatcher()
     dp.include_router(main_router)
+    dp.include_router(router_ddl_word)
 
     await dp.start_polling(bot, skip_updates=True)
 
