@@ -41,10 +41,12 @@ async def start_learn(message: types.Message, state: FSMContext) -> None:
     )
 
     # send message with word for check translate
-    await message.answer(
+    process_message = await message.answer(
         generate_message_for_check_translate(new_learn_process),
         reply_markup=ReplyKeyboardRemove(),
     )
+
+    new_learn_process.add_process_message(process_message)
 
 
 @router_learn.message(state=FormLearn.translate)
@@ -52,6 +54,7 @@ async def check_translate(message: types.Message, state: FSMContext) -> None:
     translate = message.text
     state_data = await state.get_data()
     learn_process = state_data["learn_process"]
+    learn_process.add_process_message(message)
     current_word = learn_process.current_word
     # we do not set a translation to state and loop the process
     await state.set_state(FormLearn.translate)
@@ -66,14 +69,16 @@ async def check_translate(message: types.Message, state: FSMContext) -> None:
     not_successful_response = f'Неправильна відповідь 🚫\n{current_word["word"]} - {" ".join(current_word["translations"])}'
     text = 'Правильна відповідь ✅' if successful else not_successful_response
 
-    await message.answer(
+    process_message = await message.answer(
         text,
         reply_markup=ReplyKeyboardRemove(),
     )
+    learn_process.add_process_message(process_message)
     await learn_process.set_new_current_word()
 
     # send message with word for check translate
-    await message.answer(
+    process_message = await message.answer(
         generate_message_for_check_translate(learn_process),
         reply_markup=ReplyKeyboardRemove(),
     )
+    learn_process.add_process_message(process_message)
