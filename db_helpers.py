@@ -52,7 +52,7 @@ async def update_number_of_correct_answers(word: str, chat_id: int, field: str, 
     }
     quantity = 1 if increase else -1
 
-    words_column.update(
+    words_column.update_one(
         query,
         {
             "$inc": {field: quantity}
@@ -60,11 +60,11 @@ async def update_number_of_correct_answers(word: str, chat_id: int, field: str, 
     )
 
 
-def check_translation(word_dict: dict, chat_id: int, input_: str, answer_from: bool) -> bool:
+async def check_translation(word_dict: dict, chat_id: int, input_: str, answer_from: bool) -> bool:
     # if translate from learning language
     if answer_from:
         field_counter = "number_of_correct_answers_from"
-        correct_answer = input_ in word_dict["translation"]
+        correct_answer = input_ in word_dict["translations"]
 
     # if translate to learning language
     else:
