@@ -64,10 +64,7 @@ async def process_gender(message: types.Message, state: FSMContext) -> None:
         data['word'], data['translates'], message.chat.id
     )
 
-    if successful:
-        text = 'Чудово, ви додали нове слово 😊'
-    else:
-        text = f'Помилка: {response}'
+    text = 'Чудово, ви додали нове слово 😊' if successful else f'Помилка: {response}'
 
     await message.answer(
         text,
