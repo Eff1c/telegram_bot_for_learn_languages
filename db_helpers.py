@@ -73,7 +73,7 @@ async def check_translation(word_dict: dict, chat_id: int, input_: str, answer_f
 
     # check > 0 because the counter must not be less than 0
     if correct_answer or word_dict[field_counter] > 0:
-        update_number_of_correct_answers(
+        await update_number_of_correct_answers(
             word_dict["word"], chat_id, field_counter, correct_answer
         )
 
