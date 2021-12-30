@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 from decouple import config
 from pymongo import MongoClient, errors
@@ -61,45 +61,45 @@ async def update_number_of_correct_answers(word: str, chat_id: int, field: str, 
 
 
 def check_translation(word_dict: dict, chat_id: int, input_: str, answer_from: bool) -> bool:
-    respond = False
-
     # if translate from learning language
     if answer_from:
-        field = "number_of_correct_answers_from"
-        if input_ in word_dict["translation"]:
-            update_number_of_correct_answers(
-                word_dict["word"], chat_id, field, True
-            )
-            respond = True
-
-        elif word_dict[field] > 0:
-            update_number_of_correct_answers(
-                word_dict["word"], chat_id, field, False
-            )
+        field_counter = "number_of_correct_answers_from"
+        correct_answer = input_ in word_dict["translation"]
 
     # if translate to learning language
     else:
-        field = "number_of_correct_answers_to"
-        if input_ == word_dict["word"]:
-            update_number_of_correct_answers(
-                word_dict["word"], chat_id, field, True
-            )
-            respond = True
+        field_counter = "number_of_correct_answers_to"
+        correct_answer = input_ == word_dict["word"]
 
-        elif word_dict[field] > 0:
-            update_number_of_correct_answers(
-                word_dict["word"], chat_id, field, False
-            )
+    # check > 0 because the counter must not be less than 0
+    if correct_answer or word_dict[field_counter] > 0:
+        update_number_of_correct_answers(
+            word_dict["word"], chat_id, field_counter, correct_answer
+        )
 
-    return respond
+    return correct_answer
 
 
-async def get_random_word(current_word: str, chat_id: int) -> dict:
-    return words_column.aggregate(
-        [{
-            "$sample": {"size": 1}
-        }]
+async def get_random_word(current_word: Optional[str], chat_id: int) -> dict:
+    random_word = words_column.aggregate(
+        [
+            {
+                "$match": {
+                    "chat_id": chat_id,
+                    "word": {"$ne": current_word},
+                    "number_of_correct_answers_from": {"$lt": 10},
+                    "number_of_correct_answers_to": {"$lt": 10},
+                }
+            },
+            {
+                "$sample": {
+                    "size": 1
+                }
+            }
+        ]
     ).next()
+
+    return random_word
 
 
 async def delete(word: str) -> Tuple[bool, str]:
