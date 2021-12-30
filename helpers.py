@@ -8,16 +8,14 @@ class LearnProcess:
     current_word = None
     # translate from learning language
     answer_from = True
+    process_messages = {
+        "current_messages": [],
+        "old_messages": []
+    }
 
     def __init__(self, chat_id):
         self.chat_id = chat_id
         self.counter = 0
-
-    async def set_new_current_word(self) -> None:
-        self.current_word = await get_random_word(
-            None, self.chat_id
-        )
-        self.set_answer_from()
 
     def set_answer_from(self) -> None:
         self.answer_from = self.current_word["number_of_correct_answers_to"]\
@@ -25,6 +23,26 @@ class LearnProcess:
 
     def count(self) -> None:
         self.counter += 1
+
+    async def delete_old_process_messages(self) -> None:
+        process_messages = self.process_messages
+        for message in process_messages["old_messages"]:
+            await message.delete()
+
+        self.process_messages["old_messages"] = process_messages["current_messages"]
+        self.process_messages["current_messages"] = []
+
+    async def set_new_current_word(self) -> None:
+        self.current_word = await get_random_word(
+            None, self.chat_id
+        )
+
+        self.set_answer_from()
+        self.count()
+        await self.delete_old_process_messages()
+
+    def add_process_message(self, message):
+        self.process_messages["current_messages"].append(message)
 
 
 def read_help_text(file_name: str) -> str:
