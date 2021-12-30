@@ -6,6 +6,7 @@ from decouple import config
 
 from helpers import read_help_text
 from ddl_word import router_ddl_word
+from learn_word import router_learn
 
 logging.basicConfig(level=logging.INFO)
 
@@ -24,6 +25,7 @@ async def main():
     dp = Dispatcher()
     dp.include_router(main_router)
     dp.include_router(router_ddl_word)
+    dp.include_router(router_learn)
 
     await dp.start_polling(bot, skip_updates=True)
 
