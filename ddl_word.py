@@ -1,10 +1,9 @@
-from aiogram import Router, types, F
-from aiogram.dispatcher.filters import Text
+from aiogram import Router, types
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardRemove
 
-from helpers import read_help_text, parse_translates_from_str
+from helpers import read_help_text, parse_translates_from_str, delete_message
 from db_helpers import add_word as add_word_to_db
 
 router_ddl_word = Router()
@@ -16,7 +15,6 @@ class FormAddWord(StatesGroup):
 
 
 @router_ddl_word.message(commands={"cancel"})
-@router_ddl_word.message(F.text.casefold() == "cancel")
 async def cancel_handler(message: types.Message, state: FSMContext) -> None:
     """
     Allow user to cancel any action
@@ -32,17 +30,20 @@ async def cancel_handler(message: types.Message, state: FSMContext) -> None:
     )
 
 
-@router_ddl_word.message(commands=['add'])
+@router_ddl_word.message(commands={'add'})
 async def add_word(message: types.Message, state: FSMContext) -> None:
     """
     Add word for learning
     """
     await state.set_state(FormAddWord.word)
 
-    await message.answer(
+    answer = await message.answer(
         "Введіть слово яке хочете вивчити",
         reply_markup=ReplyKeyboardRemove(),
     )
+
+    await delete_message(message, 25)
+    await delete_message(answer, 25)
 
 
 @router_ddl_word.message(state=FormAddWord.word)
@@ -52,7 +53,10 @@ async def process_word(message: types.Message, state: FSMContext) -> None:
 
     help_text = read_help_text("add_translations_help.txt")
 
-    await message.answer(help_text)
+    answer = await message.answer(help_text)
+
+    await delete_message(message, 20)
+    await delete_message(answer, 20)
 
 
 @router_ddl_word.message(state=FormAddWord.translates)
@@ -66,12 +70,12 @@ async def process_gender(message: types.Message, state: FSMContext) -> None:
         data['word'], data['translates'], message.chat.id
     )
 
-    if successful:
-        text = 'Чудово, ви додали нове слово 😊'
-    else:
-        text = f'Помилка: {response}'
+    text = 'Чудово, ви додали нове слово 😊' if successful else f'Помилка: {response}'
 
-    await message.answer(
+    answer = await message.answer(
         text,
         reply_markup=ReplyKeyboardRemove(),
     )
+
+    await delete_message(message, 15)
+    await delete_message(answer, 15)
