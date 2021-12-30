@@ -86,7 +86,9 @@ async def get_random_word(current_word: Optional[str], chat_id: int) -> dict:
             {
                 "$match": {
                     "chat_id": chat_id,
-                    "word": {"$ne": current_word}
+                    "word": {"$ne": current_word},
+                    "number_of_correct_answers_from": {"$lt": 10},
+                    "number_of_correct_answers_to": {"$lt": 10},
                 }
             },
             {
