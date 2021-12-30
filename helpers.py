@@ -1,3 +1,6 @@
+import asyncio
+from contextlib import suppress
+from aiogram import types
 from random import choice as random_choice
 from typing import List
 
@@ -60,3 +63,8 @@ def generate_message_for_check_translate(learn_process: LearnProcess) -> str:
         return word["word"]
     else:
         return random_choice(word["translations"])
+
+
+async def delete_message(message: types.Message, sleep_time: int = 0):
+    await asyncio.sleep(sleep_time)
+    await message.delete()
