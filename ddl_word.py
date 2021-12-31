@@ -4,7 +4,7 @@ from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardRemove
 
 from helpers import read_help_text, parse_translates_from_str, delete_message
-from db_helpers import add_word as add_word_to_db
+from db_helpers import add_word as add_word_to_db, delete as db_delete_word
 
 router_ddl_word = Router()
 
@@ -12,6 +12,10 @@ router_ddl_word = Router()
 class FormAddWord(StatesGroup):
     word = State()
     translates = State()
+
+
+class FormDeleteWord(StatesGroup):
+    word = State()
 
 
 @router_ddl_word.message(commands={"cancel"})
@@ -79,3 +83,33 @@ async def process_gender(message: types.Message, state: FSMContext) -> None:
 
     await delete_message(message, 15)
     await delete_message(answer, 15)
+
+
+@router_ddl_word.message(commands={'delete'})
+async def delete_word(message: types.Message, state: FSMContext) -> None:
+    await state.set_state(FormDeleteWord.word)
+
+    answer = await message.answer(
+        "Введіть слово яке хочете видалити",
+        reply_markup=ReplyKeyboardRemove(),
+    )
+
+    await delete_message(message, 20)
+    await delete_message(answer, 20)
+
+
+@router_ddl_word.message(state=FormDeleteWord.word)
+async def delete_word_finish(message: types.Message, state: FSMContext) -> None:
+    successful, response = await db_delete_word(
+        message.text, message.chat.id
+    )
+
+    text = 'Слово видалено успішно ✅' if successful else f'Помилка: {response}'
+
+    answer = await message.answer(
+        text,
+        reply_markup=ReplyKeyboardRemove(),
+    )
+
+    await delete_message(message, 20)
+    await delete_message(answer, 20)
