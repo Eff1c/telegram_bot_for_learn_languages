@@ -4,7 +4,7 @@ from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardRemove
 
 from helpers import read_help_text, parse_translates_from_str, delete_message
-from db_helpers import add_word as add_word_to_db, delete as db_delete_word
+from db_helpers import add_word as add_word_to_db, delete_word as db_delete_word
 
 router_ddl_word = Router()
 
@@ -64,7 +64,7 @@ async def process_word(message: types.Message, state: FSMContext) -> None:
 
 
 @router_ddl_word.message(state=FormAddWord.translates)
-async def process_gender(message: types.Message, state: FSMContext) -> None:
+async def process_translates(message: types.Message, state: FSMContext) -> None:
     data = await state.update_data(
         translates=parse_translates_from_str(message.text)
     )
