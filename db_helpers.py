@@ -113,3 +113,11 @@ async def delete_word(word: str, chat_id: int) -> Tuple[bool, str]:
         return True, "Successful!"
     else:
         return False, "Word not found!"
+
+
+async def get_count_words(chat_id: int) -> int:
+    return words_column.count_documents(
+        {
+            "chat_id": chat_id,
+        }
+    )
