@@ -14,7 +14,7 @@ main_router = Router()
 
 
 @main_router.message(commands=['start', 'help'])
-async def send_welcome(message: types.Message):
+async def help_handler(message: types.Message):
     help_text = read_help_text("main_help.txt")
 
     await message.reply(help_text)
