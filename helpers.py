@@ -4,7 +4,7 @@ from aiogram import types
 from random import choice as random_choice
 from typing import List
 
-from db_helpers import get_random_word
+from db_helpers import get_random_word, check_count_words
 
 
 class LearnProcess:
@@ -68,3 +68,8 @@ def generate_message_for_check_translate(learn_process: LearnProcess) -> str:
 async def delete_message(message: types.Message, sleep_time: int = 0):
     await asyncio.sleep(sleep_time)
     await message.delete()
+
+
+async def check_if_enough_words(chat_id: int) -> bool:
+    count = check_count_words(chat_id)
+    return count > 2
