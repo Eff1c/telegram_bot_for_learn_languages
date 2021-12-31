@@ -102,9 +102,12 @@ async def get_random_word(current_word: Optional[str], chat_id: int) -> dict:
     return random_word
 
 
-async def delete(word: str) -> Tuple[bool, str]:
+async def delete(word: str, chat_id: int) -> Tuple[bool, str]:
     response = words_column.delete_one(
-        {"word": word}
+        {
+            "word": word,
+            "chat_id": chat_id,
+        }
     )
     if response.deleted_count != 0:
         return True, "Successful!"
