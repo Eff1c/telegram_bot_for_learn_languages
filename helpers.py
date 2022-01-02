@@ -1,10 +1,10 @@
 import asyncio
-from contextlib import suppress
 from aiogram import types
+from aiogram.dispatcher.fsm.context import FSMContext
 from random import choice as random_choice
 from typing import List
 
-from db_helpers import get_random_word, check_count_words
+from db_helpers import get_random_word, get_count_words
 
 
 class LearnProcess:
@@ -70,6 +70,17 @@ async def delete_message(message: types.Message, sleep_time: int = 0):
     await message.delete()
 
 
-async def check_if_enough_words(chat_id: int) -> bool:
-    count = check_count_words(chat_id)
-    return count > 2
+async def check_count_words(func):
+    async def wrapper(message: types.Message, state: FSMContext):
+        count = await get_count_words(message.chat.id)
+        if count < 2:
+            text = read_help_text("insufficient_number_words.txt")
+            await message.answer(text)
+            current_state = await state.get_state()
+            if current_state is None:
+                return
+
+            await state.clear()
+        else:
+            func(message, state)
+    return wrapper
