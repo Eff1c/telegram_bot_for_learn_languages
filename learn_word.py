@@ -27,8 +27,8 @@ async def stop_learn(message: types.Message, state: FSMContext) -> None:
     )
 
 
-@check_count_words
 @router_learn.message(commands={'start_learn'})
+@check_count_words
 async def start_learn(message: types.Message, state: FSMContext) -> None:
     new_learn_process = LearnProcess(message.chat.id)
     await new_learn_process.set_new_current_word()
@@ -50,8 +50,8 @@ async def start_learn(message: types.Message, state: FSMContext) -> None:
     new_learn_process.add_process_message(process_message)
 
 
-@check_count_words
 @router_learn.message(state=FormLearn.translate)
+@check_count_words
 async def check_translate(message: types.Message, state: FSMContext) -> None:
     translate = message.text
     state_data = await state.get_data()
