@@ -70,7 +70,7 @@ async def delete_message(message: types.Message, sleep_time: int = 0):
     await message.delete()
 
 
-async def check_count_words(func):
+def check_count_words(func):
     async def wrapper(message: types.Message, state: FSMContext):
         count = await get_count_words(message.chat.id)
         if count < 2:
