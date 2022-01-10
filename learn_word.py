@@ -4,7 +4,7 @@ from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardRemove
 
 from db_helpers import check_translation
-from helpers import generate_message_for_check_translate, LearnProcess
+from helpers import generate_message_for_check_translate, LearnProcess, check_count_words
 
 router_learn = Router()
 
@@ -28,6 +28,7 @@ async def stop_learn(message: types.Message, state: FSMContext) -> None:
 
 
 @router_learn.message(commands={'start_learn'})
+@check_count_words
 async def start_learn(message: types.Message, state: FSMContext) -> None:
     new_learn_process = LearnProcess(message.chat.id)
     await new_learn_process.set_new_current_word()
@@ -50,6 +51,7 @@ async def start_learn(message: types.Message, state: FSMContext) -> None:
 
 
 @router_learn.message(state=FormLearn.translate)
+@check_count_words
 async def check_translate(message: types.Message, state: FSMContext) -> None:
     translate = message.text
     state_data = await state.get_data()

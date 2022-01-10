@@ -1,10 +1,10 @@
 import asyncio
-from contextlib import suppress
 from aiogram import types
+from aiogram.dispatcher.fsm.context import FSMContext
 from random import choice as random_choice
 from typing import List
 
-from db_helpers import get_random_word
+from db_helpers import get_random_word, get_count_words
 
 
 class LearnProcess:
@@ -68,3 +68,19 @@ def generate_message_for_check_translate(learn_process: LearnProcess) -> str:
 async def delete_message(message: types.Message, sleep_time: int = 0):
     await asyncio.sleep(sleep_time)
     await message.delete()
+
+
+def check_count_words(func):
+    async def wrapper(message: types.Message, state: FSMContext):
+        count = await get_count_words(message.chat.id)
+        if count < 2:
+            text = read_help_text("insufficient_number_words.txt")
+            await message.answer(text)
+            current_state = await state.get_state()
+            if current_state is None:
+                return
+
+            await state.clear()
+        else:
+            func(message, state)
+    return wrapper
