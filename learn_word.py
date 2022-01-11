@@ -4,7 +4,7 @@ from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardRemove
 
 from db_helpers import check_translation
-from helpers import generate_message_for_check_translate, LearnProcess, check_count_words
+from helpers import generate_message_for_check_translate, LearnProcess, check_count_words, read_help_text
 
 router_learn = Router()
 
@@ -37,7 +37,7 @@ async def start_learn(message: types.Message, state: FSMContext) -> None:
     await state.set_state(FormLearn.translate)
 
     await message.answer(
-        "Розпочинаємо процес навчання ✍️",
+        read_help_text("start_learn.txt"),
         reply_markup=ReplyKeyboardRemove(),
     )
 
@@ -53,7 +53,7 @@ async def start_learn(message: types.Message, state: FSMContext) -> None:
 @router_learn.message(state=FormLearn.translate)
 @check_count_words
 async def check_translate(message: types.Message, state: FSMContext) -> None:
-    translate = message.text
+    translate = message.text.lower()
     state_data = await state.get_data()
     learn_process = state_data["learn_process"]
     learn_process.add_process_message(message)
@@ -68,7 +68,7 @@ async def check_translate(message: types.Message, state: FSMContext) -> None:
         learn_process.answer_from
     )
 
-    not_successful_response = f'Неправильна відповідь 🚫\n{current_word["word"]} - {" ".join(current_word["translations"])}'
+    not_successful_response = f'Неправильна відповідь 🚫\n{current_word["word"]} - {", ".join(current_word["translations"])}'
     text = 'Правильна відповідь ✅' if successful else not_successful_response
 
     process_message = await message.answer(
