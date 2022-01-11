@@ -52,7 +52,7 @@ async def add_word(message: types.Message, state: FSMContext) -> None:
 
 @router_ddl_word.message(state=FormAddWord.word)
 async def process_word(message: types.Message, state: FSMContext) -> None:
-    await state.update_data(word=message.text)
+    await state.update_data(word=message.text.lower())
     await state.set_state(FormAddWord.translates)
 
     help_text = read_help_text("add_translations_help.txt")
@@ -101,7 +101,7 @@ async def delete_word(message: types.Message, state: FSMContext) -> None:
 @router_ddl_word.message(state=FormDeleteWord.word)
 async def delete_word_finish(message: types.Message, state: FSMContext) -> None:
     successful, response = await db_delete_word(
-        message.text, message.chat.id
+        message.text.lower(), message.chat.id
     )
 
     text = 'Слово видалено успішно ✅' if successful else f'Помилка: {response}'

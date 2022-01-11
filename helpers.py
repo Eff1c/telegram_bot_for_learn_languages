@@ -54,7 +54,7 @@ def read_help_text(file_name: str) -> str:
 
 
 def parse_translates_from_str(text: str) -> List[str]:
-    return text.strip().split(";")
+    return text.strip().lower().split(";")
 
 
 def generate_message_for_check_translate(learn_process: LearnProcess) -> str:

@@ -53,7 +53,7 @@ async def start_learn(message: types.Message, state: FSMContext) -> None:
 @router_learn.message(state=FormLearn.translate)
 @check_count_words
 async def check_translate(message: types.Message, state: FSMContext) -> None:
-    translate = message.text
+    translate = message.text.lower()
     state_data = await state.get_data()
     learn_process = state_data["learn_process"]
     learn_process.add_process_message(message)
