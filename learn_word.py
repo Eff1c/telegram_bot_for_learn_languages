@@ -68,7 +68,7 @@ async def check_translate(message: types.Message, state: FSMContext) -> None:
         learn_process.answer_from
     )
 
-    not_successful_response = f'Неправильна відповідь 🚫\n{current_word["word"]} - {" ".join(current_word["translations"])}'
+    not_successful_response = f'Неправильна відповідь 🚫\n{current_word["word"]} - {", ".join(current_word["translations"])}'
     text = 'Правильна відповідь ✅' if successful else not_successful_response
 
     process_message = await message.answer(
