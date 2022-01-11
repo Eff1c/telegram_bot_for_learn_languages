@@ -82,5 +82,5 @@ def check_count_words(func):
 
             await state.clear()
         else:
-            func(message, state)
+            await func(message, state)
     return wrapper
