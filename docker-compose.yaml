@@ -1,0 +1,33 @@
+version: "3.7"
+services:
+  db:
+    image: mongo:latest
+    container_name: tg_bot_mongo
+    restart: always
+    volumes:
+      - tg_bot_mongo_conf:/data/configdb
+      - tg_bot_mongo_data:/data/db
+    networks:
+      - db-network
+    environment:
+      BOT_TOKEN: "${BOT_TOKEN}"
+
+  bot:
+    build: .
+    container_name: tg_bot
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - db-network
+    environment:
+      MONGODB_HOST: "tg_bot_mongo"
+      MONGODB_PORT: "${MONGODB_PORT}"
+    ports:
+      - '61545:61545'
+
+volumes:
+  tg_bot_mongo_conf:
+  tg_bot_mongo_data:
+networks:
+  db-network:
