@@ -1,2 +1,0 @@
-class ObjectIsExist(Exception):
-    pass
