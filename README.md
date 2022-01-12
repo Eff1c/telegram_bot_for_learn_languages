@@ -1,10 +1,6 @@
 # telegram_bot_for_learn_languages
 
-.env fields
-
-DB_LINK
-TEST_DB_LINK
-SECRET_KEY
-LANGUAGE_TO_LEAR
-LANGUAGE_TO_TRANSLATION
-BOT_TOKEN
+###.env fields:
+* BOT_TOKEN
+* MONGODB_HOST
+* MONGODB_PORT
