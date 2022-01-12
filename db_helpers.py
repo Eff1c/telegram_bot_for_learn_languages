@@ -3,7 +3,9 @@ from typing import List, Tuple, Optional
 from decouple import config
 from pymongo import MongoClient, errors
 
-client = MongoClient(config("MONGODB_URL"))
+MONGODB_URL = f'mongodb://{config("MONGODB_HOST")}:{config("MONGODB_PORT")}/'
+
+client = MongoClient(MONGODB_URL)
 
 db = client.learn_english
 
