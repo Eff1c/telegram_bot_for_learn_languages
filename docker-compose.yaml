@@ -28,6 +28,8 @@ services:
 
 volumes:
   tg_bot_mongo_conf:
+    name: tg_bot_mongo_conf
   tg_bot_mongo_data:
+    name: tg_bot_mongo_data
 networks:
   db-network:
