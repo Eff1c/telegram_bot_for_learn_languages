@@ -4,3 +4,4 @@
 * BOT_TOKEN
 * MONGODB_HOST
 * MONGODB_PORT
+* DEBUG (optional)
