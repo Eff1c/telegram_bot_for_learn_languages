@@ -3,10 +3,13 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardRemove
 
+from config import create_logger
 from helpers import read_help_text, parse_translates_from_str, delete_message
 from db_helpers import add_word as add_word_to_db, delete_word as db_delete_word
 
 router_ddl_word = Router()
+
+logger = create_logger(__name__)
 
 
 class FormAddWord(StatesGroup):

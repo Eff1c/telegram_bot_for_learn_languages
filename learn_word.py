@@ -3,10 +3,13 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardRemove
 
+from config import create_logger
 from db_helpers import check_translation
 from helpers import generate_message_for_check_translate, LearnProcess, check_count_words, read_help_text
 
 router_learn = Router()
+
+logger = create_logger(__name__)
 
 
 class FormLearn(StatesGroup):

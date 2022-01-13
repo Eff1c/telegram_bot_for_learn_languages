@@ -1,16 +1,16 @@
 import asyncio
-import logging
 
 from aiogram import Bot, Dispatcher, types, Router
 from decouple import config
 
+from config import create_logger
 from helpers import read_help_text, before_run
 from ddl_word import router_ddl_word
 from learn_word import router_learn
 
-logging.basicConfig(level=logging.INFO)
-
 main_router = Router()
+
+logger = create_logger(__name__)
 
 
 @main_router.message(commands=['start', 'help'])

@@ -3,6 +3,8 @@ from typing import List, Tuple, Optional
 from decouple import config
 from pymongo import MongoClient, errors
 
+from config import create_logger
+
 MONGODB_URL = f'mongodb://{config("MONGODB_HOST")}:{config("MONGODB_PORT")}/'
 
 client = MongoClient(MONGODB_URL)
@@ -10,6 +12,8 @@ client = MongoClient(MONGODB_URL)
 db = client.learn_english
 
 words_column = db.words
+
+logger = create_logger(__name__)
 
 
 def create_word_index() -> None:
