@@ -24,7 +24,7 @@ def create_word_index() -> None:
         # 85 is code "index already exists with a different name" error
         # if it is - not raising error
         if not error_details or error_details.get("code") != 85:
-            raise error
+            logger.critical(error)
         logger.info(error_details.get("errmsg"))
 
 
