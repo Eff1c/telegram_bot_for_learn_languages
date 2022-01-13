@@ -1,6 +1,0 @@
-source venv/bin/activate
-
-docker run --name mongo_db -p 27017:27017 -d mongo
-docker run --name mongo_test_db --rm -p 27017:27017 -d mongo
-
-docker run --name postgres_test_db --rm -p 5432:5432 -e POSTGRES_PASSWORD=root -d postgres

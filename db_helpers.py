@@ -12,8 +12,16 @@ db = client.learn_english
 words_column = db.words
 
 
-def first_run() -> None:
-    words_column.create_index([("word", "text")], unique=True)
+def create_word_index() -> None:
+    try:
+        words_column.create_index([("text", "word")], name="word_unique", unique=True)
+    except errors.OperationFailure as error:
+        error_details = error.__dict__.get("_OperationFailure__details")
+        # 85 is code "index already exists with a different name" error
+        # if it is - not raising error
+        if not error_details or error_details.get("code") != 85:
+            raise error
+        # logger.info(error_details.get("errmsg"))
 
 
 async def add_word(
