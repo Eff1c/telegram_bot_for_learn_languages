@@ -25,7 +25,7 @@ def create_word_index() -> None:
         # if it is - not raising error
         if not error_details or error_details.get("code") != 85:
             raise error
-        # logger.info(error_details.get("errmsg"))
+        logger.info(error_details.get("errmsg"))
 
 
 async def add_word(
@@ -54,8 +54,10 @@ async def add_word(
                 "number_of_correct_answers_to": number_of_correct_answers_to
             }
         )
+        logger.debug("Successful add word!")
         return True, "Successful!"
     except errors.DuplicateKeyError:
+        logger.debug("add_word: Not unique word!")
         return False, "Not unique word!"
 
 
@@ -72,6 +74,7 @@ async def update_number_of_correct_answers(word: str, chat_id: int, field: str, 
             "$inc": {field: quantity}
         }
     )
+    logger.debug("Successful update number of correct answers!")
 
 
 async def check_translation(word_dict: dict, chat_id: int, input_: str, answer_from: bool) -> bool:
@@ -91,6 +94,7 @@ async def check_translation(word_dict: dict, chat_id: int, input_: str, answer_f
             word_dict["word"], chat_id, field_counter, correct_answer
         )
 
+    logger.debug(f"{'Correct' if correct_answer else 'Not correct'} answer!")
     return correct_answer
 
 
@@ -124,8 +128,10 @@ async def delete_word(word: str, chat_id: int) -> Tuple[bool, str]:
         }
     )
     if response.deleted_count != 0:
+        logger.debug("Successful delete word!")
         return True, "Successful!"
     else:
+        logger.debug("delete_word: Word not found!")
         return False, "Word not found!"
 
 
