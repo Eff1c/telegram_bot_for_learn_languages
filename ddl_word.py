@@ -3,10 +3,13 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardRemove
 
+from config import create_logger
 from helpers import read_help_text, parse_translates_from_str, delete_message
 from db_helpers import add_word as add_word_to_db, delete_word as db_delete_word
 
 router_ddl_word = Router()
+
+logger = create_logger(__name__)
 
 
 class FormAddWord(StatesGroup):
@@ -23,6 +26,7 @@ async def cancel_handler(message: types.Message, state: FSMContext) -> None:
     """
     Allow user to cancel any action
     """
+    logger.debug("run cancel_handler")
     current_state = await state.get_state()
     if current_state is None:
         return
@@ -39,6 +43,7 @@ async def add_word(message: types.Message, state: FSMContext) -> None:
     """
     Add word for learning
     """
+    logger.debug("run add_word")
     await state.set_state(FormAddWord.word)
 
     answer = await message.answer(
@@ -52,6 +57,7 @@ async def add_word(message: types.Message, state: FSMContext) -> None:
 
 @router_ddl_word.message(state=FormAddWord.word)
 async def process_word(message: types.Message, state: FSMContext) -> None:
+    logger.debug("run process_word")
     await state.update_data(word=message.text.lower())
     await state.set_state(FormAddWord.translates)
 
@@ -65,6 +71,7 @@ async def process_word(message: types.Message, state: FSMContext) -> None:
 
 @router_ddl_word.message(state=FormAddWord.translates)
 async def process_translates(message: types.Message, state: FSMContext) -> None:
+    logger.debug("run process_translates")
     data = await state.update_data(
         translates=parse_translates_from_str(message.text)
     )
@@ -87,6 +94,7 @@ async def process_translates(message: types.Message, state: FSMContext) -> None:
 
 @router_ddl_word.message(commands={'delete'})
 async def delete_word(message: types.Message, state: FSMContext) -> None:
+    logger.debug("run delete_word")
     await state.set_state(FormDeleteWord.word)
 
     answer = await message.answer(
@@ -100,6 +108,7 @@ async def delete_word(message: types.Message, state: FSMContext) -> None:
 
 @router_ddl_word.message(state=FormDeleteWord.word)
 async def delete_word_finish(message: types.Message, state: FSMContext) -> None:
+    logger.debug("run delete_word_finish")
     successful, response = await db_delete_word(
         message.text.lower(), message.chat.id
     )
