@@ -4,7 +4,7 @@ from aiogram.dispatcher.fsm.context import FSMContext
 from random import choice as random_choice
 from typing import List
 
-from db_helpers import get_random_word, get_count_words
+from db_helpers import get_random_word, get_count_words, create_word_index
 
 
 class LearnProcess:
@@ -84,3 +84,8 @@ def check_count_words(func):
         else:
             await func(message, state)
     return wrapper
+
+
+def before_run():
+    # create index for db
+    create_word_index()
