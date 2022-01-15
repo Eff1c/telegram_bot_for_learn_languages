@@ -92,7 +92,7 @@ async def process_translates(message: types.Message, state: FSMContext) -> None:
     await delete_message(answer, 15)
 
 
-@router_ddl_word.message(commands={'delete'})
+@router_ddl_word.message(commands={'remove', 'delete'})
 async def delete_word(message: types.Message, state: FSMContext) -> None:
     logger.debug("run delete_word")
     await state.set_state(FormDeleteWord.word)
