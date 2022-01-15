@@ -38,7 +38,7 @@ class LearnProcess:
 
     async def set_new_current_word(self) -> None:
         self.current_word = await get_random_word(
-            None, self.chat_id
+            self.current_word, self.chat_id
         )
 
         self.set_answer_from()
