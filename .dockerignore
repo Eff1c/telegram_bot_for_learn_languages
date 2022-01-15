@@ -2,3 +2,6 @@ __pycache__
 venv
 .idea
 .pytest_cache
+Dockerfile
+docker-compose.yml
+.dockerignore
