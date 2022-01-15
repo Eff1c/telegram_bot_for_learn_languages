@@ -98,16 +98,20 @@ async def check_translation(word_dict: dict, chat_id: int, input_: str, answer_f
     return correct_answer
 
 
-async def get_random_word(current_word: Optional[str], chat_id: int) -> dict:
+async def get_random_word(current_word: Optional[dict], chat_id: int) -> dict:
+    filters = {
+        "chat_id": chat_id,
+        "number_of_correct_answers_from": {"$lt": 10},
+        "number_of_correct_answers_to": {"$lt": 10},
+    }
+
+    if current_word:
+        filters["word"] = {"$ne": current_word["word"]}
+
     random_word = words_column.aggregate(
         [
             {
-                "$match": {
-                    "chat_id": chat_id,
-                    "word": {"$ne": current_word},
-                    "number_of_correct_answers_from": {"$lt": 10},
-                    "number_of_correct_answers_to": {"$lt": 10},
-                }
+                "$match": filters
             },
             {
                 "$sample": {
