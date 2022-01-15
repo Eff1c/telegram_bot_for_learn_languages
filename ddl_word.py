@@ -108,6 +108,7 @@ async def delete_word(message: types.Message, state: FSMContext) -> None:
 
 @router_ddl_word.message(state=FormDeleteWord.word)
 async def delete_word_finish(message: types.Message, state: FSMContext) -> None:
+    await state.clear()
     logger.debug("run delete_word_finish")
     successful, response = await db_delete_word(
         message.text.lower(), message.chat.id
